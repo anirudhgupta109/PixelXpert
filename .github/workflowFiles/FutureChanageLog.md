@@ -1,4 +1,4 @@
-- Switch to fork!
+- Its PixelXpert-Next time!
 - Support now for Android 17QPR1
 - Resolve Android 17QPR1 background camera restrictions + power button detection  
 - xposed: Rectify scope list for Android system  
