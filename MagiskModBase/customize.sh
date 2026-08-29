@@ -99,6 +99,19 @@ assert16QPR
 
 testKernelSU
 
+enforceSepolicyWhitelist()
+{
+	# Whitelist approach: only keep sepolicy.rule if it's a pure Magisk install
+	# KSU and APatch might spoof MAGISK_VER_CODE, so we explicitly ensure they are not active.
+	if [ -n "$MAGISK_VER_CODE" ] && [ "$KSU" != "true" ] && [ "$APATCH" != "true" ]; then
+		ui_print "- Magisk detected, keeping sepolicy.rule"
+	else
+		# If not Magisk (or if it's KSU/APatch), remove the rule
+		rm -f "$MODPATH/sepolicy.rule"
+	fi
+}
+enforceSepolicyWhitelist
+
 prepareSQL
 
 ui_print ''
