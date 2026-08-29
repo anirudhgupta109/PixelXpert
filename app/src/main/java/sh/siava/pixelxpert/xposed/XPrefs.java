@@ -12,7 +12,7 @@ import sh.siava.pixelxpert.xposed.utils.ExtendedRemotePreferences;
 public class XPrefs {
 	@SuppressLint("StaticFieldLeak")
 	public static ExtendedRemotePreferences Xprefs;
-	public static final String MagiskRoot = "/data/adb/modules/PixelXpert";
+	public static final String MagiskRoot = "/data/adb/modules/PixelXpert-Next";
 	public static String packageName;
 
 	private static final OnSharedPreferenceChangeListener listener = (sharedPreferences, key) -> loadEverything(packageName, key);

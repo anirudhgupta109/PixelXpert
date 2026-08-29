@@ -1,5 +1,5 @@
 PKGNAME="sh.siava.pixelxpert"
-PKGPATH="/system/priv-app/PixelXpert/PixelXpert.apk"
+PKGPATH="/system/priv-app/PixelXpert-Next/PixelXpert-Next.apk"
 LSPDDBPATH="/data/adb/lspd/config/modules_config.db"
 MAGISKDBPATH="/data/adb/magisk.db"
 
@@ -124,14 +124,14 @@ else
 	ui_print 'Please:'
 	ui_print '- Install Lsposed'
 	ui_print '- Reboot'
-#	ui_print '- Manually enable PixelXpert in Lsposed'
+#	ui_print '- Manually enable PixelXpert-Next in Lsposed'
 #	ui_print '- Reboot'
 fi
 
 	ui_print ''
-	ui_print '  **********************'
-	ui_print '  * Brought to you by: *'
-	ui_print '  *                    *'
-	ui_print '  * PixelXpert team    *'
-	ui_print '  **********************'
+	ui_print '  ***************************'
+	ui_print '  * Brought to you by:      *'
+	ui_print '  *                         *'
+	ui_print '  * PixelXpert-Next team    *'
+	ui_print '  ***************************'
 	ui_print ''

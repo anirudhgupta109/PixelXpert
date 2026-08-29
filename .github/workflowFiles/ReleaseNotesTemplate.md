@@ -1,29 +1,13 @@
+Compatibility:
+Pixel Stock Rom:
+17
+17 QPR1
 
-**Compatibility:**
-AOSP based Androids:
-12, 12.1 (12L), 13DP1
-13 DP2 & beta 1 (poorly compatible - not recommended)
+If you are updating from previous versions:
+Update your module via module update shortcut in KSU, or use the built-in updater located in the app
 
-**If you're updating from previous versions:**
-Update your module via module update shortcut in Magisk
-
-**To install, you will need to:**
-Install LSPosed Zygisk (https://t.me/LSPosedArchives)
-Install the zip file in Magisk
+To install, you will need to:
+Install LSPosed
+Caution: If using KSU, make sure to disable "unmount modules by default" from KSU options, or your device will bootloop
+Install the zip file in KSU (You will be able to install canary builds once the stable version is installed, through built-in updater)
 Reboot
-Technically, the module should automatically activate itself in Lsposed and get its required root permissions. If didn't, please activate manually and reboot again
-
-**Translation credits:**
-@ElTifo 		Portuguese
-@cracky5322		Chinese Traditional
-@JohnsonRan		Chinese Simplified
-@TireX228		Russian
-@ygorigor		Romanian
-@krystianokris	Polish
-@HofaTheRipper	German
-@acuicultor		Spanish
-@tomaja18		Spanish
-@n3rd3x3		Spanish
-@TeaqariaWTF	Turkish
-@EleoXDA Turkish, German, Russian
-@nmayorga092   Spanish

@@ -1,1 +1,6 @@
--
+- Switch to fork!
+- Support now for Android 17QPR1
+- Resolve Android 17QPR1 background camera restrictions + power button detection  
+- xposed: Rectify scope list for Android system  
+- RecordingMessage: Suppress call-{recording,notes} TTS  
+- Fix lockscreen double tap to sleep gesture support

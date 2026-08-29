@@ -3,9 +3,10 @@ name: Make Canary Release
 on:
   push:
     branches:
-      - 'canary'
+      - 'main'
     paths:
       - '.github/edit2MakeNewCanary'
+  workflow_dispatch:
 
 jobs:
   build:
@@ -16,8 +17,25 @@ jobs:
 
     steps:
     - name: Source Code Download
-      run: git clone --branch canary --single-branch --recurse-submodules https://github.com/siavash79/PixelXpert.git .
-      
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        submodules: recursive
+
+    - name: Download px_files branch
+      uses: actions/checkout@v4
+      with:
+        ref: px_files
+        path: px_files
+        
+    - name: Prepare px_files for Canary Build
+      run: |
+        cp px_files/canary/module.prop MagiskModBase/module.prop
+        cp px_files/canary/MagiskModuleUpdate_Full.json MagiskModuleUpdate_Full.json || true
+        cp px_files/canary/MagiskModuleUpdate_Xposed.json MagiskModuleUpdate_Xposed.json || true
+        cp px_files/latestCanary.json latestCanary.json || true
+        cp px_files/CanaryChangelog.md CanaryChangelog.md || true
+
     - name: JDK 21 Setup
       uses: actions/setup-java@v5.2.0
       with:
@@ -53,7 +71,7 @@ jobs:
     - name: Upload Xposed Artifact to Actions
       uses: actions/upload-artifact@v7.0.1
       with: 
-        name: PixelXpert.zip
+        name: PixelXpert-Next.zip
         path: output
 
     - name: Canary Binary Release
@@ -68,19 +86,36 @@ jobs:
         draft: false
         artifacts: 'output/*.*'
 
+    - name: Update px_files branch for Canary
+      run: |
+        cp MagiskModBase/module.prop px_files/canary/module.prop
+        cp MagiskModuleUpdate_Full.json px_files/canary/MagiskModuleUpdate_Full.json || true
+        cp MagiskModuleUpdate_Xposed.json px_files/canary/MagiskModuleUpdate_Xposed.json || true
+        cp latestCanary.json px_files/latestCanary.json || true
+        cp CanaryChangelog.md px_files/CanaryChangelog.md || true
+        
+        cd px_files
+        VERSION=$(grep -i "VERSION_NAME" ../version.properties | cut -d '=' -f 2 | tr -d ' \r')
+        git config user.name "GitHub Actions"
+        git config user.email "actions@github.com"
+        git add .
+        git diff-index --quiet HEAD || git commit -m "${VERSION}: ${{ github.sha }}: Update release files"
+        git push origin px_files
+
     - name: Version Bump Commit
       uses: github-actions-x/commit@v2.9
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
-        push-branch: 'canary'
-        commit-message: 'Version update: Release'
+        push-branch: 'main'
+        commit-message: 'Version update: Release [skip ci]'
         force-add: 'true'
-        files: MagiskModBase/module.prop version.properties latestVersion.json CanaryChangelog.md latestCanary.json MagiskModuleUpdate_Xposed.json MagiskModuleUpdate_Full.json
+        files: version.properties
         name: GitHub
         email: PixelXpert@siava.sh
 
     - name: Telegram Channel Post
       uses: appleboy/telegram-action@master
+      if: env.TMessage != ''
       with:
         to: ${{ secrets.AOSPMODS_CHANNEL_ID }}
         token: ${{ secrets.TELEGRAM_TOKEN }}
@@ -88,5 +123,6 @@ jobs:
         format: markdown
 
     - name: Telegram File Attachment
+      if: env.TMessage != ''
       run: |
-        curl -v "https://api.telegram.org/bot${{ secrets.TELEGRAM_TOKEN }}/sendMediaGroup?chat_id=${{ secrets.AOSPMODS_CHANNEL_ID }}&media=%5B%7B%22type%22%3A%22document%22%2C%20%22media%22%3A%22attach%3A%2F%2FXposed%22%7D%5D" -F Xposed="@output/PixelXpert.zip"
+        curl -v "https://api.telegram.org/bot${{ secrets.TELEGRAM_TOKEN }}/sendMediaGroup?chat_id=${{ secrets.AOSPMODS_CHANNEL_ID }}&media=%5B%7B%22type%22%3A%22document%22%2C%20%22media%22%3A%22attach%3A%2F%2FXposed%22%7D%5D" -F Xposed="@output/PixelXpert-Next.zip"

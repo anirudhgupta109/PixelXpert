@@ -1,23 +1,21 @@
 #!/bin/bash
+set -eo pipefail
 
-  # reset the file - most likely not needd
-  rm -f changeLog.md
-  rm -f Tchangelog.htm
-  touch changeLog.md
-  touch Tchangelog.htm
+> changeLog.md
+> Tchangelog.htm
 
-  #find the last time we made a changelog
-  LASTUPDATE=$(git log -100 | grep -B 4 "Version update: Release" | grep "commit" -m 1 | cut -d " " -f 2)
-  #find commits since - starting with the magic phrase
-  COMMITS=$(git rev-list $LASTUPDATE..HEAD --grep "^CHANGELOG: ")
-  #separator is newline
-  IFS=$'\n'
-  for COMMIT in $COMMITS
-  do
-    COMMITMSGS=$(git show $COMMIT --pretty=format:"%s" | grep "^CHANGELOG: " | tr -d '\0')
-      for LINE in $COMMITMSGS
-      do
-        #save in the temp file to be used by next script
-        echo "- "${LINE##*CHANGELOG: }"  " >> changeLog.md
-      done
-  done
+LASTUPDATE=$(git log --grep="^Version update: Release" -n 1 --format="%H" 2>/dev/null || true)
+RANGE="${LASTUPDATE:+$LASTUPDATE..}HEAD"
+
+# 1. Extract explicit CHANGELOG lines across all commits
+git log "$RANGE" --format="%B" 2>/dev/null | grep -i "^[[:space:]]*CHANGELOG:[[:space:]]*" | sed -E 's/^[[:space:]]*CHANGELOG:[[:space:]]*//I' | sed 's/^/- /; s/$/  /' > changeLog.md || true
+
+# 2. If none, extract clean commit subjects
+if [ ! -s changeLog.md ]; then
+  git log "$RANGE" --no-merges --format="%s" 2>/dev/null | grep -vEi "^(New Crowdin|Version update:|canary release|Update edit2MakeNewCanary|Update CanaryChangelog\.md|Add archived notice)" | sed -E 's/^[a-zA-Z]+(\([^)]+\))?:[[:space:]]*//' | sed 's/^/- /; s/$/  /' > changeLog.md || true
+fi
+
+# 3. Ultimate fallback
+if [ ! -s changeLog.md ]; then
+  echo "- Bug fixes and improvements  " > changeLog.md
+fi

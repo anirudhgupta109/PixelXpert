@@ -14,7 +14,7 @@
 		android:enableOnBackInvokedCallback="true"
 		android:forceQueryable="true"
 		android:icon="@mipmap/ic_launcher"
-		android:label="Pixel Xpert"
+		android:label="PixelXpert-Next"
 		android:supportsRtl="true"
 		android:theme="@style/AppTheme.PixelXpert">
 		<activity

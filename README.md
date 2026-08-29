@@ -1,24 +1,21 @@
-### This repository is Archived ###
-We have decided to shutdown the project indefinitely ([details](https://xdaforums.com/t/closed-mod-xposed-magisk-android-16-compatible-pixel-xpert-system-modifications-for-pixel-phones-12.4421743/post-90634455)). Therefore, this repository is archived. Feel free to fork it or use the codes for any purpose.
+### This repository is [forked](https://github.com/siavash79/PixelXpert) ###
+The original project was shutdown and this repository was created to continue the work for future Android builds, you can find older builds in the original repository.
 
 
-### For Pixel Stock Android 12 and 13 (Up to Nov 2022 - AOSP 13R8):  
-[![Latest Release for A12 & A13 up to Nov 2022](https://img.shields.io/badge/Download-v2.4.1-blue)](https://github.com/siavash79/PixelXpert/releases/tag/v2.4.1)  
+### For Pixel Stock Android 17 and newer:  
+[![Latest Release](https://img.shields.io/github/v/release/anirudhgupta109/PixelXpert-Next?color=green&include_prereleases&label=Download%20Latest%20Stable)](https://github.com/anirudhgupta109/PixelXpert-Next/releases/latest)
+[![Latest Canary Release](https://img.shields.io/badge/Download%20Latest-Canary-blue)](https://github.com/anirudhgupta109/PixelXpert-Next/releases/tag/canary_builds)
 
-### For Pixel Stock Android 13 (Dec 2022) to Android 16 (June 2025):  
-[![Latest Release A13 up to A16](https://img.shields.io/badge/Download-v4.3.0-blue)](https://github.com/siavash79/PixelXpert/releases/tag/v4.3.0)  
+![Downloads - Stable channel](https://img.shields.io/github/downloads/anirudhgupta109/PixelXpert-Next/total?color=red&label=Downloads%20-%20Stable%20Channel)
 
-### For Pixel Stock Android 16 QPR1 and newer:  
-[![Latest Release](https://img.shields.io/github/v/release/siavash79/PixelXpert?color=green&include_prereleases&label=Download%20Latest%20Stable)](https://github.com/siavash79/PixelXpert/releases/latest)
-[![Latest Canary Release](https://img.shields.io/badge/Download%20Latest-Canary-blue)](https://github.com/siavash79/PixelXpert/releases/tag/canary_builds)
-
-![Downloads - Stable channel](https://img.shields.io/github/downloads/siavash79/PixelXpert/total?color=red&label=Downloads%20-%20Stable%20Channel)
+### For Older Pixel Stock builds:
+Refer to [The original project](https://github.com/siavash79/PixelXpert#for-pixel-stock-android-12-and-13-up-to-nov-2022---aosp-13r8)
 
 
 
 [![Telegram URL](https://img.shields.io/badge/Telegram-Join-2CA5E?style=social&logo=telegram)](https://t.me/PixelXpert_Github)
 
-![Header Image](https://github.com/siavash79/PixelXpert/blob/canary/.github/PixelXpert_Banner_1280.jpg?raw=true)
+![Header Image](https://github.com/anirudhgupta109/PixelXpert-Next/blob/main/.github/PixelXpert_Banner_1280.jpg?raw=true)
 
 This is a mixed Xposed+Magisk module, which is made to allow customizations that are not originally designed in AOSP (Android Open Source Project). Please read thorough below before reaching to download links
 <hr>
@@ -41,24 +38,27 @@ PixelXpert is ONLY compatible with pixel stock firmware on Google Pixel devices.
 
 Here is the compatibility chart according to different android versions and QPRs:
 
-- Android 12/12.1 and 13 (up to Nov 2022): [final version: v2.4.1](https://github.com/siavash79/PixelXpert/releases/tag/v2.4.1).
-- Android 13 stable QPR3 to Android 16 (June 2022): [final version: v.4.3.0](https://github.com/siavash79/PixelXpert/releases/tag/v4.3.0).
-- Android 16 stable QPR1 and newer: [latest stable version](https://github.com/siavash79/PixelXpert/releases/latest)
+- Android 17 newer: [latest stable version](https://github.com/anirudhgupta109/PixelXpert-Next/releases/latest)
+- Android 16 (June 2022) and older Android Versions: [Refer to original project](https://github.com/siavash79/PixelXpert#compatibility).
 <hr>
 
 ### **Prerequisites:**
 - Compatible ROM (see Compatibility text above)
-- Device Rooted with Magisk 24.2+ or KSU
-- LSPosed (Zygisk Version preferred) (For Android 14+ use [LSPosed fork by JingMatrix](https://github.com/JingMatrix/LSPosed/releases))
+- Device Rooted with KSU
+- A metamodule in KSU like [Mountify](https://github.com/backslashxx/mountify/releases/latest) or [NoMount](https://github.com/maxsteeel/nomount/releases/latest)
+- LSPosed (Zygisk Version preferred) (For Android 14+ use [LSPosed fork (Vector) by JingMatrix](https://github.com/JingMatrix/Vector/releases)) or the [closed source LSPosed by the original team](https://lsposed.zip)
 <hr>
 
 ### **How to install:**
-- Download the stable magisk module according to your firmware as mentioned above 
-- Install in magisk/KSU
+- Download the stable magisk module according to your firmware as mentioned above
+- Flash a metamodule in KSU that has overlay support like [Mountify](https://github.com/backslashxx/mountify/releases/latest) or [NoMount](https://github.com/maxsteeel/nomount/releases/latest)
+PS. You might need to configure your metamodule (in the case of Mountify, set `MOUNT_DEVICE_NAME` to `KSU` and ensure `mountify_mounts` is `2` and `mountify_custom_umount` is `0`)
+- Reboot
+- Install PixelXpert in KSU
 - Reboot (no bootloops are expected)
+- Grant root for PixelXpert in KSU (since it doesn't automatically request)
 - Open PixelXpert app and apply changes
 
-P.S. For KSU, there is an extra step of granting root access to PixelXpert as it doesn't request automatically as in Magisk
 <hr>
 
 ### **Release Variants:**  
@@ -68,7 +68,7 @@ The module is also released in 2 flavors with different manual download and upda
 - Manual Install/Update: through repository's Github release page (link below) AND through in-app updater
 
 <ins>Canary release:</ins>
-- Manual Install/Update: through repository's Actions page and [telegram channel](https://t.me/PixelXpert_Github) (latest version is available from [here](https://github.com/siavash79/PixelXpert/releases/tag/canary_builds) also)
+- Manual Install/Update: through repository's Actions page and [telegram channel](https://t.me/PixelXpert_Github) (latest version is available from [here](https://github.com/anirudhgupta109/PixelXpert-Next/releases/tag/canary_builds) also)
 
 *No matter which flavor you're on, you can always switch to the other one with in-app updater
 <hr>
@@ -99,5 +99,5 @@ This project is open source and free for usage, build or copy. However, if you r
 - RKBDI@Telegram  (Icon)
 
 **Brought to you by:**
-@siavash79 & @ElTifo
+@siavash79, @ElTifo & @anirudhgupta109
 <hr>

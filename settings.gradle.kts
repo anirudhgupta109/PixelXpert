@@ -15,7 +15,7 @@ dependencyResolutionManagement {
 	}
 }
 
-rootProject.name = "PixelXpert"
+rootProject.name = "PixelXpert-Next"
 include(":app")
 include(":Submodules:RangeSliderPreference")
 include(":annotations")

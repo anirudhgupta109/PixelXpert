@@ -88,7 +88,7 @@ android {
 }
 
 androidComponents {
-	val apkName = "PixelXpert.apk"
+	val apkName = "PixelXpert-Next.apk"
 	onVariants { variant ->
 		val artifactDir = variant.artifacts.get(SingleArtifact.APK)
 
