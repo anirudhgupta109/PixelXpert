@@ -1,0 +1,7 @@
+{
+    "version": "v5.1.1",
+    "versionCode": 499,
+    "changelog": "https://raw.githubusercontent.com/anirudhgupta109/PixelXpert-Next/px_files/StableChangelog.md",
+    "zipUrl": "https://github.com/anirudhgupta109/PixelXpert-Next/releases/download/v5.1.1/PixelXpert.zip",
+    "zipUrl_Xposed": "https://github.com/anirudhgupta109/PixelXpert-Next/releases/download/v5.1.1/PixelXpert.zip"
+}

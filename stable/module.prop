@@ -1,0 +1,8 @@
+id=PixelXpert-Next
+name=PixelXpert-Next
+version=v5.1.1
+versionCode=499
+author=PixelXpert-Next Team
+description=Xposed based module for customizations on Pixel roms. Android 13+
+updateJson=https://raw.githubusercontent.com/anirudhgupta109/PixelXpert-Next/px_files/stable/MagiskModuleUpdate_Xposed.json
+minMagisk=25000
