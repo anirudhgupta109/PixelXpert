@@ -1,3 +1,7 @@
+**canary-501**  
+- Allow magiskd to interact with priv-apps targetting API 36  
+- Stable release  
+  
 **canary-500**  
 - PixelXpert-Next: Introduction of fork and GH Actions rectifications  
 - Resolve Android 17QPR1 background camera restrictions + power button detection  
