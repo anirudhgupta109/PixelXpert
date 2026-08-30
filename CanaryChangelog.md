@@ -1,3 +1,6 @@
+**canary-502**  
+- {MagiskModBase,app} Add support for newer android beta build numbers  
+  
 **canary-501**  
 - Allow magiskd to interact with priv-apps targetting API 36  
 - Stable release  
