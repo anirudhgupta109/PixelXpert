@@ -1,55 +1,81 @@
-name: Make Test Package
+name: Make Canary Release
 
 on:
-  workflow_dispatch
+  push:
+    branches:
+      - 'test'
+  workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
+    permissions:
+      contents: write
+
     steps:
-      - run: git clone -b ${GITHUB_REF_NAME} --recurse-submodules https://github.com/anirudhgupta109/PixelXpert-Next.git .
-        name: Grab source code
+    - name: Source Code Download
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        submodules: recursive
+
+    - name: Download px_files branch
+      uses: actions/checkout@v4
+      with:
+        ref: px_files
+        path: px_files
         
-      - name: Setup JDK 18
-        uses: actions/setup-java@v3
-        with:
-          java-version: '18'
-          distribution: 'temurin'
-          cache: gradle
+    - name: Prepare px_files for Canary Build
+      run: |
+        cp px_files/canary/module.prop MagiskModBase/module.prop
+        cp px_files/canary/MagiskModuleUpdate_Full.json MagiskModuleUpdate_Full.json || true
+        cp px_files/canary/MagiskModuleUpdate_Xposed.json MagiskModuleUpdate_Xposed.json || true
+        cp px_files/latestCanary.json latestCanary.json || true
+        cp px_files/CanaryChangelog.md CanaryChangelog.md || true
 
-      - name: Grant permission shell scripts
-        run: chmod +x .github/*.sh
+    - name: JDK 21 Setup
+      uses: actions/setup-java@v5.2.0
+      with:
+        java-version: '21'
+        distribution: 'jetbrains'
+        cache: gradle
 
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
-      - name: Build with Gradle
-        run: ./gradlew build
+    - name: Gradlew Permissions
+      run: chmod +x gradlew
 
-      - uses: r0adkll/sign-android-release@v1
-        name: Sign app APK
+    - name: Signature files preparation
+      run: |
+          if [ ! -z "${{ secrets.SIGNING_KEY }}" ]; then
+            echo storePassword='${{ secrets.KEY_STORE_PASSWORD }}' >> ReleaseKey.properties
+            echo keyAlias='${{ secrets.ALIAS }}' >> ReleaseKey.properties
+            echo keyPassword='${{ secrets.KEY_PASSWORD }}' >> ReleaseKey.properties
+            echo storeFile='${{ github.workspace }}/ReleaseKey.jks' >> ReleaseKey.properties
+            echo ${{ secrets.SIGNING_KEY }} | base64 --decode > ${{ github.workspace }}/ReleaseKey.jks
+          fi
+      
+    - name: Gradle Build
+      run: ./gradlew buildCanary -Pchannel=canary
 
-        id: sign_app
-        with:
-          releaseDirectory: app/build/outputs/apk/debug
-          signingKeyBase64: ${{ secrets.SIGNING_KEY }}
-          alias: ${{ secrets.ALIAS }}
-          keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
-          keyPassword: ${{ secrets.KEY_PASSWORD }}
-        env:
-          BUILD_TOOLS_VERSION: "33.0.0"
+    - name: Shell Scripts Permissions
+      run: chmod +x .github/*.sh
 
-      - uses: actions/upload-artifact@v2
-        name: Upload APK file
-        with:
-          name: PixelXpert-Next.apk
-          path: ${{steps.sign_app.outputs.signedReleaseFile}}
+    - name: Changelog Generation
+      run: .github/extractCanaryChanges.sh
 
-      - name: Run the zip script
-        run: .github/make_debug_zip.sh
+    - name: Prepare Message
+      run: .github/prepareCanaryChangelog.sh
 
-      - name: Upload Zip
-        uses: actions/upload-artifact@v2
-        with:
-          name: PixelXpert-Next.zip
-          path: output
+    - name: Telegram Channel Post
+      uses: appleboy/telegram-action@master
+      if: env.TMessage != ''
+      with:
+        to: ${{ secrets.TEST_CHANNEL_ID }}
+        token: ${{ secrets.TELEGRAM_TOKEN }}
+        message: ${{ env.TMessage }}
+        format: markdown
+
+    - name: Telegram File Attachment
+      if: env.TMessage != ''
+      run: |
+        curl -v "https://api.telegram.org/bot${{ secrets.TELEGRAM_TOKEN }}/sendMediaGroup?chat_id=${{ secrets.TEST_CHANNEL_ID }}&media=%5B%7B%22type%22%3A%22document%22%2C%20%22media%22%3A%22attach%3A%2F%2FXposed%22%7D%5D" -F Xposed="@output/PixelXpert-Next.zip"
