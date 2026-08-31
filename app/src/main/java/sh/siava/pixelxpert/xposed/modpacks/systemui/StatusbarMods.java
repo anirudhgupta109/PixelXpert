@@ -260,6 +260,8 @@ public class StatusbarMods extends XposedModPack {
 
 		if (AODNIC != null) {
 			setObjectField(AODNIC, "maxIcons", NotificationAODIconLimit);
+		}
+		if (SBNIC != null) {
 			setObjectField(SBNIC, "maxIcons", NotificationIconLimit);
 		}
 
