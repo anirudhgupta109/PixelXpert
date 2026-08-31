@@ -1,3 +1,6 @@
+**canary-503**  
+- prevent system crash due to NullPointerException when updating preferences  
+  
 **canary-502**  
 - {MagiskModBase,app} Add support for newer android beta build numbers  
   
