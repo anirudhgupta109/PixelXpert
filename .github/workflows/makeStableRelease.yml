@@ -79,9 +79,9 @@ jobs:
         cat .github/workflowFiles/FutureChanageLog.md >> releaseNotes.md
         cat .github/workflowFiles/ReleaseNotesTemplate.md >> releaseNotes.md
         
-        echo "*$NEWVERNAME* released in stable channel  " > telegram.msg
+        echo "$NEWVERNAME released in stable channel  " > telegram.msg
         echo "  " >> telegram.msg
-        echo "*Changelog:*  " >> telegram.msg
+        echo "Changelog:  " >> telegram.msg
         cat .github/workflowFiles/FutureChanageLog.md >> telegram.msg
         
         echo 'TMessage<<EOF' >> $GITHUB_ENV
@@ -128,7 +128,6 @@ jobs:
         to: ${{ secrets.AOSPMODS_CHANNEL_ID }}
         token: ${{ secrets.TELEGRAM_TOKEN }}
         message: ${{ env.TMessage }}
-        format: markdown
 
     - name: Telegram File Attachment
       if: env.TMessage != ''
