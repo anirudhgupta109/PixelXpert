@@ -43,3 +43,14 @@ grantRootApps(){
 prepareSQL 
  
 grantRootApps
+
+# Wait for boot to finish
+until [ "$(getprop sys.boot_completed)" = "1" ]; do
+	sleep 1
+done
+
+# Give the system a brief moment to settle after unlock
+sleep 2
+
+# Restart SystemUI so the LSPosed hook can properly initiate with decrypted preferences
+killall com.android.systemui
