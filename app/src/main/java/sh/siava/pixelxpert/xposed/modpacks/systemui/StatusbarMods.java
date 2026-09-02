@@ -935,10 +935,11 @@ public class StatusbarMods extends XposedModPack {
 	}
 
 	private View findComposeView(ViewGroup parent) {
+		if (parent == null) return null;
 		for(int i = 0; i < parent.getChildCount(); i++)
 		{
 			View child = parent.getChildAt(i);
-			if(child.getClass().getName().endsWith("ComposeView"))
+			if(child != null && child.getClass().getName().endsWith("ComposeView"))
 				return child;
 		}
 		return null;
@@ -1182,7 +1183,16 @@ public class StatusbarMods extends XposedModPack {
 
 	//region clock and date related
 	private void placeClock() {
-		ViewGroup parent = (ViewGroup) mClockView.getParent();
+		View viewToMove = mClockView;
+		if (isJetpackClock) {
+			View composeView = findComposeView(mStatusbarStartSide);
+			if (composeView == null) composeView = findComposeView(mLeftExtraRowContainer);
+			if (composeView == null && mCenteredIconArea != null) composeView = findComposeView((ViewGroup) mCenteredIconArea);
+			if (composeView == null && mSystemIconArea != null) composeView = findComposeView((ViewGroup) mSystemIconArea.getParent());
+			if (composeView != null) viewToMove = composeView;
+		}
+
+		ViewGroup parent = (ViewGroup) viewToMove.getParent();
 		ViewGroup targetArea = null;
 		Integer index = null;
 
@@ -1195,23 +1205,23 @@ public class StatusbarMods extends XposedModPack {
 					targetArea = mStatusbarStartSide;
 					index = 1;
 				}
-				mClockView.setPadding(0, 0, leftClockPadding, 0);
+				viewToMove.setPadding(0, 0, leftClockPadding, 0);
 				break;
 			case POSITION_CENTER:
 				targetArea = (ViewGroup) mCenteredIconArea;
-				mClockView.setPadding(rightClockPadding, 0, rightClockPadding, 0);
+				viewToMove.setPadding(rightClockPadding, 0, rightClockPadding, 0);
 				break;
 			case POSITION_RIGHT:
-				mClockView.setPadding(rightClockPadding, 0, 0, 0);
+				viewToMove.setPadding(rightClockPadding, 0, 0, 0);
 				targetArea = ((ViewGroup) mSystemIconArea.getParent());
 				break;
 		}
-		parent.removeView(mClockView);
+		if (parent != null) parent.removeView(viewToMove);
 		if (index != null) {
-			targetArea.addView(mClockView, index);
+			targetArea.addView(viewToMove, index);
 		} else {
 			//noinspection DataFlowIssue
-			targetArea.addView(mClockView);
+			targetArea.addView(viewToMove);
 		}
 	}
 
