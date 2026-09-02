@@ -598,4 +598,5 @@
     <string name="watts">Watts</string>
     <string name="fast_charging_threshold_title">Fast charging threshold</string>
 
+    <string name="sb_multi_row_clock_bottom">Move clock to bottom row</string>
 </resources>
