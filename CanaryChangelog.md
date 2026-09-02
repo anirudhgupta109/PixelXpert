@@ -1,3 +1,12 @@
+**canary-504**  
+- Stable release  
+- Do not reposition 'Ongoing Chip' to prevent clock from disappearing when notifications are cleared  
+- Use system clock seconds setting from SysUI Tuner if show seconds is enabled  
+- implement Android 17 ClockInteractor hook to support custom clock formats  
+- disable markdown formatting for Telegram posts to prevent parsing errors  
+- service.sh: Restart SysUI after boot complete to allow lsposed hook into it  
+- Uprev to canary version and only post in TG  
+  
 **canary-503**  
 - prevent system crash due to NullPointerException when updating preferences  
   
