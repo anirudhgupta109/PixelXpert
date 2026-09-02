@@ -405,6 +405,17 @@ public class StatusbarMods extends XposedModPack {
 			}
 		}
 
+		if (mContext != null && isJetpackClock) {
+			try {
+				int current = android.provider.Settings.Secure.getInt(mContext.getContentResolver(), "clock_seconds", 0);
+				int desired = mShowSeconds ? 1 : 0;
+				if (current != desired) {
+					android.provider.Settings.Secure.putInt(mContext.getContentResolver(), "clock_seconds", desired);
+				}
+			} catch (Throwable t) {
+			}
+		}
+
 		try {
 			placeClock();
 			updateClock();
@@ -458,6 +469,7 @@ public class StatusbarMods extends XposedModPack {
 	@SuppressLint("DiscouragedApi")
 	@Override
 	public void onPackageLoaded(XposedModuleInterface.PackageReadyParam PRParam) throws Throwable {
+		onPreferenceUpdated();
 		IntentFilter filter = new IntentFilter();
 		filter.addAction(Constants.ACTION_PROFILE_SWITCH_AVAILABLE);
 		mContext.registerReceiver(mAppProfileSwitchReceiver, filter, Context.RECEIVER_EXPORTED);
