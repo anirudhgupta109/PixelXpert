@@ -135,6 +135,7 @@ public class StatusbarMods extends XposedModPack {
 	private static final ArrayList<ClockVisibilityCallback> clockVisibilityCallbacks = new ArrayList<>();
 	private Object mActivityStarter;
 	private static boolean notificationAreaMultiRow = false;
+	private static boolean multiRowClockBottom = false;
 	private static int NotificationAODIconLimit = 3;
 	private static int NotificationIconLimit = 4;
 	private Object AODNIC;
@@ -244,7 +245,14 @@ public class StatusbarMods extends XposedModPack {
 				SystemUtils.killSelf();
 			}
 		}
+		if (Key.length > 0 && Key[0].equals("multiRowClockBottom")) {
+			boolean newMultiRowClockBottom = Xprefs.getBoolean("multiRowClockBottom", false);
+			if (newMultiRowClockBottom != multiRowClockBottom) {
+				SystemUtils.killSelf();
+			}
+		}
 		notificationAreaMultiRow = Xprefs.getBoolean("notificationAreaMultiRow", false);
+		multiRowClockBottom = Xprefs.getBoolean("multiRowClockBottom", false);
 
 		try {
 			NotificationIconLimit = Integer.parseInt(Xprefs.getString("NotificationIconLimit", "").trim());
@@ -880,13 +888,19 @@ public class StatusbarMods extends XposedModPack {
 		mLeftVerticalSplitContainer.setLayoutTransition(layoutTransition);
 
 		mLeftExtraRowContainer = new ShyLinearLayout(mContext);
-		mLeftVerticalSplitContainer.addView(mLeftExtraRowContainer, 0);
+		if (!multiRowClockBottom) {
+			mLeftVerticalSplitContainer.addView(mLeftExtraRowContainer, 0);
+		}
 
 		ViewGroup parent = (ViewGroup) mNotificationIconContainer.getParent();
 
 		parent.addView(mLeftVerticalSplitContainer, parent.indexOfChild(mNotificationIconContainer));
 		parent.removeView(mNotificationIconContainer);
 		mLeftVerticalSplitContainer.addView(mNotificationContainerContainer);
+		
+		if (multiRowClockBottom) {
+			mLeftVerticalSplitContainer.addView(mLeftExtraRowContainer);
+		}
 
 		repositionOngoingChip();
 

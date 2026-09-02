@@ -151,6 +151,15 @@
                 android:title="@string/sb_multi_row_notification_icons"
                 app:iconSpaceReserved="false" />
 
+            <sh.siava.pixelxpert.ui.preferences.MaterialSwitchPreference
+                android:defaultValue="false"
+                android:key="multiRowClockBottom"
+                android:summaryOff="@string/general_off"
+                android:summaryOn="@string/general_on"
+                android:title="@string/sb_multi_row_clock_bottom"
+                app:dependency="notificationAreaMultiRow"
+                app:iconSpaceReserved="false" />
+
         </sh.siava.pixelxpert.ui.preferences.MaterialPreferenceCategory>
 
         <sh.siava.pixelxpert.ui.preferences.MaterialPreferenceCategory
