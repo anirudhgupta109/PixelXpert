@@ -1,3 +1,7 @@
+**6.0.1**  
+- Add Magisk support
+- Ensure LSPosed hooks to SystemUI
+
 **6.0.0**  
 - Its PixelXpert-Next time!
 - Support now for Android 17QPR1
