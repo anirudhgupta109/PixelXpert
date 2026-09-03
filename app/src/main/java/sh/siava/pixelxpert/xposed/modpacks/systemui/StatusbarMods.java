@@ -91,6 +91,7 @@ public class StatusbarMods extends XposedModPack {
 	private static final int AM_PM_STYLE_SMALL = 1;
 	private static final int AM_PM_STYLE_GONE = 2;
 	private final int leftClockPadding, rightClockPadding;
+	private static boolean isJetpackClock = false;
 	private static int clockPosition = POSITION_LEFT;
 	private static int mAmPmStyle = AM_PM_STYLE_GONE;
 	private static boolean mShowSeconds = false;
@@ -404,6 +405,17 @@ public class StatusbarMods extends XposedModPack {
 			}
 		}
 
+		if (mContext != null && isJetpackClock) {
+			try {
+				int current = android.provider.Settings.Secure.getInt(mContext.getContentResolver(), "clock_seconds", 0);
+				int desired = mShowSeconds ? 1 : 0;
+				if (current != desired) {
+					android.provider.Settings.Secure.putInt(mContext.getContentResolver(), "clock_seconds", desired);
+				}
+			} catch (Throwable t) {
+			}
+		}
+
 		try {
 			placeClock();
 			updateClock();
@@ -457,6 +469,7 @@ public class StatusbarMods extends XposedModPack {
 	@SuppressLint("DiscouragedApi")
 	@Override
 	public void onPackageLoaded(XposedModuleInterface.PackageReadyParam PRParam) throws Throwable {
+		onPreferenceUpdated();
 		IntentFilter filter = new IntentFilter();
 		filter.addAction(Constants.ACTION_PROFILE_SWITCH_AVAILABLE);
 		mContext.registerReceiver(mAppProfileSwitchReceiver, filter, Context.RECEIVER_EXPORTED);
@@ -682,6 +695,56 @@ public class StatusbarMods extends XposedModPack {
 				});
 
 		//clock mods
+		try {
+			ReflectedClass clockInteractorClass = ReflectedClass.of("com.android.systemui.clock.domain.interactor.ClockInteractor");
+			isJetpackClock = true;
+			clockInteractorClass.after("getClockTextFormatString").run(param -> {
+				String orig = (String) param.getResult();
+				String customFormat = orig;
+
+				// 1. apply am/pm (Since Compose renders as String, this will be 100% size)
+				if (mAmPmStyle != AM_PM_STYLE_GONE && !customFormat.contains("a")) {
+					customFormat = customFormat + "\u202fa";
+				} else if (mAmPmStyle == AM_PM_STYLE_GONE && customFormat.contains("a")) {
+					customFormat = customFormat.replace("\u202fa", "").replace(" a", "").replace("a", "");
+				}
+
+				// Fix native SystemUI bug: remove trailing spaces left over from removing seconds or AM/PM
+				customFormat = customFormat.trim();
+
+				// 3. custom text before / after
+				java.util.function.Function<String, String> convertToPattern = (input) -> {
+					if (input == null || input.isEmpty()) return "";
+					StringBuilder pat = new StringBuilder();
+					java.util.regex.Pattern p = java.util.regex.Pattern.compile("\\$G([A-Za-z]+)");
+					java.util.regex.Matcher m = p.matcher(input);
+					int lastEnd = 0;
+					while (m.find()) {
+						String literal = input.substring(lastEnd, m.start());
+						if (!literal.isEmpty()) {
+							pat.append("'").append(literal.replace("'", "''")).append("'");
+						}
+						pat.append(m.group(1));
+						lastEnd = m.end();
+					}
+					String literal = input.substring(lastEnd);
+					if (!literal.isEmpty()) {
+						pat.append("'").append(literal.replace("'", "''")).append("'");
+					}
+					return pat.toString();
+				};
+				
+				if (!mStringFormatBefore.isEmpty()) {
+					customFormat = convertToPattern.apply(mStringFormatBefore.trim()) + "\u202f" + customFormat;
+				}
+				if (!mStringFormatAfter.isEmpty()) {
+					customFormat = customFormat + "\u202f" + convertToPattern.apply(mStringFormatAfter.trim());
+				}
+				param.setResult(customFormat);
+			});
+		} catch (Throwable t) {
+			log("ClockInteractor not found, skipping Android 17 Compose hook.");
+		}
 		ClockClass
 				.before("getSmallTime")
 				.run(param -> {
@@ -852,6 +915,7 @@ public class StatusbarMods extends XposedModPack {
 	}
 
 	private void repositionOngoingChip() {
+		if (isJetpackClock) return; // In Android 17, the ComposeView contains the Clock, so we can't move it!
 		View ongoingChipComposeView = findComposeView(mPhoneStatusbarView.findViewById(idOf("status_bar_start_side_except_heads_up")));
 		reAddView(mNotificationContainerContainer, ongoingChipComposeView);
 	}
