@@ -741,7 +741,7 @@ public class StatusbarMods extends XposedModPack {
 					}
 					return pat.toString();
 				};
-				
+
 				if (!mStringFormatBefore.isEmpty()) {
 					customFormat = convertToPattern.apply(mStringFormatBefore.trim()) + "\u202f" + customFormat;
 				}
