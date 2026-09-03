@@ -1,3 +1,7 @@
+**6.0.2**  
+- Fix Pixel Build Number compatibility filter
+- Fix immediate lock on double tap to sleep anywhere
+
 **6.0.1**  
 - Add Magisk support
 - Ensure LSPosed hooks to SystemUI
