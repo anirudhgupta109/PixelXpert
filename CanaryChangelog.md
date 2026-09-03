@@ -1,3 +1,7 @@
+**canary-505**  
+- use GO_TO_SLEEP_REASON_POWER_BUTTON to force immediate lock on double tap to sleep  
+- Add A17 build id to pixelbuild filters  
+  
 **canary-504**  
 - Stable release  
 - Do not reposition 'Ongoing Chip' to prevent clock from disappearing when notifications are cleared  
