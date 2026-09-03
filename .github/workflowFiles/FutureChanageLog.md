@@ -1,2 +1,2 @@
-- Add Magisk support
-- Ensure LSPosed hooks to SystemUI
+- Fix Pixel Build Number compatibility filter
+- Fix immediate lock on double tap to sleep anywhere
