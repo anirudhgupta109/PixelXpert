@@ -1,3 +1,8 @@
+**canary-506**  
+- pin wireless ADB to a static port via internal TCP forwarder  
+- physically move ComposeView on Android 17 so clock repositioning works  
+- add option to move clock to second row when multi-row notifications are enabled  
+  
 **canary-505**  
 - use GO_TO_SLEEP_REASON_POWER_BUTTON to force immediate lock on double tap to sleep  
 - Add A17 build id to pixelbuild filters  
