@@ -26,6 +26,13 @@ body:
     attributes:
       label: Expected behavior
       description: A clear and concise description of what you expected to happen instead of what you observed.
+  - type: input
+    attributes:
+      label: Android build version
+      description: To get the build ID, go to Settings > About phone > Build number.
+      placeholder: e.g. TQ3A.230805.001
+    validations:
+      required: true
   - type: textarea
     attributes:
       label: Your device setup (Please take some time to give correct information here)
